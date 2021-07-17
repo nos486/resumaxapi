@@ -1,0 +1,34 @@
+import mongoose from "mongoose";
+import config from "./config"
+import UserController from "./controllers/user"
+
+const userController:UserController = new UserController()
+
+const connectionOptions = {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+};
+
+function dbConnect(){
+    mongoose.connect(process.env.MONGODB_URI || `mongodb+srv://${config.dbUser}:${config.dbPassword}@cluster0.z8okb.mongodb.net/cvmaker?retryWrites=true&w=majority`, connectionOptions).then(async () => {
+
+        // create admin user
+        if(! await userController.hasUsername("admin")){
+            let admin = await userController.createUser("admin", "nos486@gmail.com","admin",)
+            admin.isEmailValid = true
+            await admin.save()
+        }
+
+        console.error('database connected');
+
+    }).catch(error => {
+        console.error('Error connecting to database: ', error);
+    });
+}
+
+mongoose.connection.on('disconnected', dbConnect);
+
+
+export {dbConnect}

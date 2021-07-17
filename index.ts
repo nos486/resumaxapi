@@ -1,0 +1,32 @@
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors"
+import router from "./routes"
+import {dbConnect} from "./db";
+const app = express()
+
+//json body parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json())
+app.use(cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+    exposedHeaders: 'Key',
+}))
+
+app.use( '/static',express.static('public'))
+
+//routes
+app.use('/api/v1', router);
+
+
+// global error handler
+// app.use(errorHandler);
+
+dbConnect()
+
+const port = process.env.PORT || 3000
+
+app.listen(3000, () => {
+    console.log(`Example app listening at http://0.0.0.0:${port}`)
+})
