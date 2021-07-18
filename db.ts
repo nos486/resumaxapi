@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import config from "./config"
-import UserController from "./controllers/user"
+import userController from "./controllers/user"
 
-const userController:UserController = new UserController()
 
 const connectionOptions = {
     useCreateIndex: true,

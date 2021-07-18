@@ -13,7 +13,6 @@ export enum GENDER {
 }
 
 export interface IUser extends Document{
-    _id: string | number;
     username: string;
     email: string;
     isEmailValid : boolean,

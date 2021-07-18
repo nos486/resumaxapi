@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors"
 import router from "./routes"
 import {dbConnect} from "./db";
+import errorHandler from "./middleware/error-handler";
 const app = express()
 
 //json body parser
@@ -21,7 +22,7 @@ app.use('/api/v1', router);
 
 
 // global error handler
-// app.use(errorHandler);
+app.use(errorHandler);
 
 dbConnect()
 

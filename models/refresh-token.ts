@@ -1,7 +1,6 @@
 import {model, Schema, Model, Document,Types} from "mongoose";
 
 export interface IRefreshToken extends Document {
-    _id: string | number;
     user : Types.ObjectId,
     token : string,
     expires: number,
