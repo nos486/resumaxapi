@@ -1,10 +1,9 @@
-import User, {IUser, ROLE} from "../models/user";
-import RefreshToken, {IRefreshToken} from "../models/refresh-token";
-import config from "./../config";
+import User, {IUser} from "../models/user";
+import RefreshToken from "../models/refresh-token";
+import tokenController from "./token"
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import {randomString} from "../utils";
-import jwt from "jsonwebtoken";
+
 
 
 async function createUser(username: string, email: string, password: string): Promise<IUser> {
@@ -40,11 +39,12 @@ async function authenticateUser(username: string, password: string, ipAddress: s
     }
 
     // authentication successful so generate jwt and refresh tokens
-    const jwtToken = generateJwtToken(user);
+    const jwtToken = tokenController.generateJwtToken(user);
 
     await RefreshToken.findOneAndDelete({user: user.id})
-    const refreshToken = await generateRefreshToken(user, ipAddress);
+    const refreshToken = await tokenController.generateRefreshToken(user, ipAddress);
 
+    await user.save()
     return {
         ...user.toJSON(),
         jwtToken,
@@ -73,64 +73,7 @@ async function getUserByUsername(username: string): Promise<IUser | null> {
         })
 }
 
-function generateJwtToken(user: IUser) {
-    // create a jwt token containing the user id that expires in 15 minutes
-    //todo change expiresIn
-    return jwt.sign({id: user.id}, config.secret, {expiresIn: '15d'});
-}
 
-async function generateRefreshToken(user: IUser, ipAddress: string): Promise<IRefreshToken> {
-    return RefreshToken.create({
-        user: user._id,
-        token: randomString(40),
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // create a refresh token that expires in 7 days
-        createdByIp: ipAddress
-    }).catch((refreshToken: IRefreshToken) => {
-        return refreshToken
-    }).catch((error: Error) => {
-        throw error
-    })
-}
-
-
-async function refreshToken(token: string, ipAddress: string) {
-    let refreshToken = await RefreshToken.findOne({token}).populate('user') as IRefreshToken
-    if (!refreshToken) throw new Error('Invalid token');
-    await RefreshToken.findOneAndDelete({user: refreshToken.user})
-
-    let user = await User.findById(refreshToken.user) as IUser;
-    let newRefreshToken = await generateRefreshToken(user, ipAddress);
-    let newJwtToken = generateJwtToken(user);
-
-    // return basic details and tokens
-    return {
-        ...user.toJSON(),
-        jwtToken: newJwtToken,
-        refreshToken: newRefreshToken.token
-    };
-}
-
-async function ownsRefreshToken(userId: string, token: string): Promise<boolean> {
-    let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
-    return refreshToken.user.equals(userId)
-}
-
-async function deleteRefreshToken(token: string) {
-    let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
-    if (!refreshToken) throw new Error('Invalid token');
-    refreshToken.delete()
-}
-
-async function deleteRefreshTokenCheckUser(user: IUser,token: string,adminCanRevoke:boolean = true){
-    let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
-    if (!refreshToken) throw new Error('Invalid token');
-
-    if(refreshToken.user.equals(user.id) || adminCanRevoke && user.role == ROLE.ADMIN){
-        refreshToken.delete()
-    }else {
-        throw new Error('Forbidden');
-    }
-}
 
 
 async function hasUsername(username: string): Promise<boolean> {
@@ -148,8 +91,4 @@ export default {
     hasEmail,
     getUserById,
     getUserByUsername,
-    refreshToken,
-    ownsRefreshToken,
-    deleteRefreshToken,
-    deleteRefreshTokenCheckUser
 }

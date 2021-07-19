@@ -1,8 +1,7 @@
 import express, { Request, Response, NextFunction} from 'express';
-import User,{ROLE} from "../models/user";
 import Joi from "joi";
 import userController from "../controllers/user";
-import captcha from "../middleware/captcha"
+import tokenController from "../controllers/token";
 import validateRequest from "../middleware/validate-request";
 import jwtAuthorize from "../middleware/jwt-authorize";
 
@@ -48,7 +47,7 @@ function refreshTokenSchema(req: Request, res: Response, next: NextFunction) {
 function refreshToken(req: Request, res: Response, next: NextFunction) {
     const {token} = req.body;
     const ipAddress = req.ip;
-    userController.refreshToken(token, ipAddress )
+    tokenController.refreshToken(token, ipAddress )
         .then(({ ...user }) => {
             res.json(user);
         })
@@ -66,7 +65,7 @@ function revokeTokenSchema(req: Request, res: Response, next: NextFunction) {
 function revokeToken(req: Request, res: Response, next: NextFunction) {
     const {token} = req.body
 
-    userController.deleteRefreshTokenCheckUser(req.user,token)
+    tokenController.deleteRefreshTokenCheckUser(req.user,token)
         .then(() => res.json({ message: 'Token revoked' }))
         .catch(next);
 }
