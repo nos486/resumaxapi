@@ -1,7 +1,7 @@
-import User, {IUser} from "../models/user";
+import User, {IUser, ROLE} from "../models/user";
 import RefreshToken, {IRefreshToken} from "../models/refresh-token";
 import config from "./../config";
-import mongoose, {PopulatedDoc} from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import {randomString} from "../utils";
 import jwt from "jsonwebtoken";
@@ -110,10 +110,26 @@ async function refreshToken(token: string, ipAddress: string) {
     };
 }
 
+async function ownsRefreshToken(userId: string, token: string): Promise<boolean> {
+    let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
+    return refreshToken.user.equals(userId)
+}
+
 async function deleteRefreshToken(token: string) {
-    let refreshToken = await RefreshToken.findOne({token}).populate('user') as IRefreshToken
+    let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
     if (!refreshToken) throw new Error('Invalid token');
     refreshToken.delete()
+}
+
+async function deleteRefreshTokenCheckUser(user: IUser,token: string,adminCanRevoke:boolean = true){
+    let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
+    if (!refreshToken) throw new Error('Invalid token');
+
+    if(refreshToken.user.equals(user.id) || adminCanRevoke && user.role == ROLE.ADMIN){
+        refreshToken.delete()
+    }else {
+        throw new Error('Forbidden');
+    }
 }
 
 
@@ -133,5 +149,7 @@ export default {
     getUserById,
     getUserByUsername,
     refreshToken,
-    deleteRefreshToken
+    ownsRefreshToken,
+    deleteRefreshToken,
+    deleteRefreshTokenCheckUser
 }

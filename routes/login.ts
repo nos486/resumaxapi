@@ -4,6 +4,7 @@ import Joi from "joi";
 import userController from "../controllers/user";
 import captcha from "../middleware/captcha"
 import validateRequest from "../middleware/validate-request";
+import jwtAuthorize from "../middleware/jwt-authorize";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ const router = express.Router();
 // router.post('/',authenticateSchema,captcha.check,authenticate);
 router.post('/',authenticate);
 router.post('/refresh',refreshTokenSchema, refreshToken);
-// router.post('/revoke', authorize(), revokeTokenSchema, revokeToken);
+router.post('/revoke', jwtAuthorize, revokeTokenSchema, revokeToken);
 
 
 function authenticateSchema(req: Request, res: Response, next: NextFunction) {
@@ -53,31 +54,23 @@ function refreshToken(req: Request, res: Response, next: NextFunction) {
         })
         .catch(next);
 }
-//
-//
-// function revokeTokenSchema(req: Request, res: Response, next: NextFunction) {
-//     const schema = Joi.object({
-//         token: Joi.string().required()
-//     });
-//     validateRequest(req, next, schema);
-// }
-//
-// function revokeToken(req: Request, res: Response, next: NextFunction) {
-//     // accept token from request body or cookie
-//     const {token} = req.body
-//
-//     if (!token) return res.status(400).json({ message: 'Token is required' });
-//
-//     // users can revoke their own tokens and admins can revoke any tokens
-//     if (!req.user.ownsToken(token) && req.user.role !== ROLE.ADMIN) {
-//         return res.status(403).json({ message: 'Forbidden' });
-//     }
-//
-//     userController.deleteRefreshToken(token)
-//         .then(() => res.json({ message: 'Token revoked' }))
-//         .catch(next);
-// }
-//
+
+
+function revokeTokenSchema(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object({
+        token: Joi.string().required()
+    });
+    validateRequest(req, next, schema);
+}
+
+function revokeToken(req: Request, res: Response, next: NextFunction) {
+    const {token} = req.body
+
+    userController.deleteRefreshTokenCheckUser(req.user,token)
+        .then(() => res.json({ message: 'Token revoked' }))
+        .catch(next);
+}
+
 
 
 export default router

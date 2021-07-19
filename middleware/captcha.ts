@@ -27,10 +27,10 @@ function check(req:Request,res:Response,next:NextFunction) {
             cache.del(req.body.captchaKey)
             next()
         }else {
-            throw "Wrong captcha"
+            throw new Error("Wrong captcha")
         }
     }else {
-        throw "Wrong captcha"
+        throw new Error("Wrong captcha")
     }
 }
 

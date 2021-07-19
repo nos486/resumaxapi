@@ -64,40 +64,4 @@ const schema = new Schema(
 
 const User = model<IUser>('User', schema);
 
-//
-// User.getUserById  = async function(id, fullDetails = false) {
-//     if (! mongoose.Types.ObjectId.isValid(id)) throw 'User not found';
-//     const user = await User.findById(id);
-//     if (!user) throw 'User not found';
-//     return fullDetails ? user : basicDetails(user);
-// }
-//
-// User.getUserByUsername  = async function(username, fullDetails = false) {
-//     const user = await User.findOne({username});
-//     if (!user) throw 'User not found';
-//     return fullDetails ? user : basicDetails(user);
-// }
-//
-// User.hasUsername = async function(username){
-//     return !!(await User.findOne({username}))
-// }
-//
-// User.hasEmail = async function(email){
-//     return !!(await User.findOne({email}))
-// }
-//
-// User.getUserByEmail  = async function(email, fullDetails = false) {
-//     const user = await User.findOne({email});
-//     if (!user) throw 'User not found';
-//     return fullDetails ? user : basicDetails(user);
-// }
-//
-//
-// //helpers
-//
-// function basicDetails(user) {
-//     const { id, email, username, role } = user;
-//     return { id, email, username, role };
-// }
-
 export default User
