@@ -11,17 +11,10 @@ export enum GENDER {
     UNDISCLOSED = 'undisclosed'
 }
 
-export interface ILocation {
-    _id? : string,
-    country: string,
-    city: string,
-}
-
 export interface IExperience{
     _id? : string,
     title: string,
     company: string,
-    location?: ILocation,
     startDate: Date,
     endDate?: Date,
     atThisRole?: boolean,
@@ -60,27 +53,21 @@ export interface IUser extends Document{
     website? : string
     github? : string
     linkedin? : string
-    location : ILocation
-    birthday? : number
+    country?: string,
+    city?: string,
+    birthday? : Date
     about? : string
     experiences : IExperience[]
     educations : IEducation[]
     licenses : ILicense[]
-    language : string[]
+    languages : string[]
     avatarPath? :string
 }
 
 
-
-const schemaLocation = new Schema({
-    country: String,
-    city: String,
-});
-
 const schemaExperience = new Schema({
     title: {type: String ,required: true },
     company: {type: String ,required: true },
-    location: {type: Schema.Types.ObjectId, ref: "Location"},
     startDate: {type: Date ,required: true },
     endDate: Date,
     atThisRole: {type: Boolean ,default: false },
@@ -119,13 +106,14 @@ const schema = new Schema(
         website:{type : String},
         github:{type : String},
         linkedin:{type : String},
-        location : schemaLocation,
+        country: {type: String},
+        city: {type: String},
         birthday:{type : Number},
         about:{type : String},
         experiences : [schemaExperience],
         educations : [schemaEducation],
         licenses : [schemaLicense],
-        language : [{type : String}],
+        languages : [{type : String}],
         avatarPath : {type : String},
     },
     {

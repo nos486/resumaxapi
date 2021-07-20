@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import Joi from "joi";
 
-function validateRequest(req: Request, next: NextFunction ,schema: Joi.ObjectSchema) {
+function validateRequest(req: Request, next: NextFunction ,schema: Joi.ObjectSchema | Joi.ArraySchema) {
     const options = {
         abortEarly: false, // include all errors
         allowUnknown: true, // ignore unknown props

@@ -52,24 +52,20 @@ async function authenticateUser(username: string, password: string, ipAddress: s
     };
 }
 
-async function getUserById(id: string): Promise<IUser | null> {
+async function getUserById(id: string): Promise<IUser> {
     if (!mongoose.Types.ObjectId.isValid(id)) throw new Error('User not found');
     return User.findById(id)
         .then((data: IUser | null) => {
+            if (data == null) throw new Error('User not found');
             return data
-        })
-        .catch((error: Error) => {
-            throw error
         })
 }
 
-async function getUserByUsername(username: string): Promise<IUser | null> {
+async function getUserByUsername(username: string): Promise<IUser> {
     return User.findOne({username})
         .then((data: IUser | null) => {
+            if (data == null) throw new Error('User not found');
             return data
-        })
-        .catch((error: Error) => {
-            throw error
         })
 }
 
@@ -83,6 +79,8 @@ async function hasUsername(username: string): Promise<boolean> {
 async function hasEmail(email: string): Promise<boolean> {
     return !!(await User.findOne({email}))
 }
+
+
 
 export default {
     authenticateUser,
