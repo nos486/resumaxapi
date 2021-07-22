@@ -1,7 +1,7 @@
 import express from "express";
 import captcha from "../middleware/captcha";
 
-import loginRouter from "./login"
+import authenticateRouter from "./authenticate"
 import registerRouter from "./register"
 import userRouter from "./user"
 
@@ -12,7 +12,7 @@ router.get("/",(req, res) => {
 })
 
 router.use("/captcha",captcha.generate)
-router.use("/login",loginRouter)
+router.use("/authenticate",authenticateRouter)
 router.use("/register",registerRouter)
 router.use("/user",userRouter)
 

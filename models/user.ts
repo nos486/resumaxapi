@@ -40,6 +40,18 @@ export interface ILicense{
     credentialUrl?: string,
 }
 
+export interface IUserSettings{
+    _id? : string,
+    color: string,
+}
+
+export interface ISkills{
+    _id? : string,
+    title : string,
+    list : string[]
+    icon : string
+}
+
 export interface IUser extends Document{
     username: string
     firstName? : string
@@ -49,6 +61,7 @@ export interface IUser extends Document{
     email: string
     isEmailValid : boolean
     password : string
+    headLine? : string
     phone? : string
     website? : string
     github? : string
@@ -57,12 +70,21 @@ export interface IUser extends Document{
     city?: string,
     birthday? : Date
     about? : string
+    skills : ISkills[]
     experiences : IExperience[]
     educations : IEducation[]
     licenses : ILicense[]
     languages : string[]
     avatarPath? :string
+    settings : IUserSettings
 }
+
+
+const schemaSkills = new Schema({
+    title: {type: String ,required: true },
+    list: [{type: String}],
+    icon : {type: String},
+});
 
 
 const schemaExperience = new Schema({
@@ -92,6 +114,14 @@ const schemaLicense = new Schema({
     credentialUrl: String
 });
 
+const schemaUserSettings = new Schema({
+    color: {type: String ,required: true},
+});
+
+const defaultUserSettings:IUserSettings = {
+    color : "orange"
+}
+
 const schema = new Schema(
     {
         username: {type: String, unique: true, required: true,},
@@ -102,6 +132,7 @@ const schema = new Schema(
         email :{type : String, unique : true,},
         isEmailValid :{type:Boolean, default : false},
         password :{type : String, required: true,},
+        headLine : {type : String},
         phone:{type : String},
         website:{type : String},
         github:{type : String},
@@ -110,11 +141,13 @@ const schema = new Schema(
         city: {type: String},
         birthday:{type : Number},
         about:{type : String},
+        skills : [schemaSkills],
         experiences : [schemaExperience],
         educations : [schemaEducation],
         licenses : [schemaLicense],
         languages : [{type : String}],
         avatarPath : {type : String},
+        settings: {type :schemaUserSettings ,required:true ,default:defaultUserSettings}
     },
     {
         timestamps: true,

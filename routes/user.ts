@@ -14,6 +14,7 @@ router.get('/',jwtAuthorize,getUserFullDetail)
 router.post('/',jwtAuthorize,updateUserValidate,updateUser)
 router.get('/:username',getUserByUsername)
 
+router.post('/skills',jwtAuthorize,setSkillsValidate,setSkills)
 router.post('/experiences',jwtAuthorize,setExperienceValidate,setExperience)
 router.post('/educations',jwtAuthorize,setEducationsValidate,setEducations)
 router.post('/licenses',jwtAuthorize,setLicensesValidate,setLicenses)
@@ -77,6 +78,23 @@ function updateUser(req: Request, res: Response, next: NextFunction) {
 
     req.user.save().then(r => {
         res.json(req.user)
+    }).catch(next)
+}
+
+function setSkillsValidate(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.array().items({
+        title: Joi.string().required().min(2).max(64),
+        list : Joi.array().items(Joi.string()),
+        icon : Joi.string().min(2).max(64),
+    });
+    validateRequest(req, next, schema);
+}
+
+
+function setSkills(req: Request, res: Response, next: NextFunction) {
+    req.user.skills = req.body
+    req.user.save().then(r => {
+        res.json({ message: 'Skills updated' })
     }).catch(next)
 }
 
