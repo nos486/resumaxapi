@@ -14,6 +14,7 @@ router.get('/',jwtAuthorize,getUserFullDetail)
 router.post('/',jwtAuthorize,updateUserValidate,updateUser)
 router.get('/:username',getUserByUsername)
 
+router.post('/about',jwtAuthorize,updateAboutValidate,updateAbout)
 router.post('/skills',jwtAuthorize,setSkillsValidate,setSkills)
 router.post('/experiences',jwtAuthorize,setExperienceValidate,setExperience)
 router.post('/educations',jwtAuthorize,setEducationsValidate,setEducations)
@@ -78,6 +79,21 @@ function updateUser(req: Request, res: Response, next: NextFunction) {
 
     req.user.save().then(r => {
         res.json(req.user)
+    }).catch(next)
+}
+
+function updateAboutValidate(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object({
+        about: Joi.string().required().max(1000),
+    });
+    validateRequest(req, next, schema);
+}
+
+
+function updateAbout(req: Request, res: Response, next: NextFunction) {
+    req.user.about = req.body.about
+    req.user.save().then(r => {
+        res.json({ message: 'About updated' })
     }).catch(next)
 }
 

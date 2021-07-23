@@ -4,13 +4,14 @@ import userController from "../controllers/user";
 import tokenController from "../controllers/token";
 import validateRequest from "../middleware/validate-request";
 import jwtAuthorize from "../middleware/jwt-authorize";
+import captcha from "../middleware/captcha";
 
 const router = express.Router();
 
 
 
-// router.post('/',authenticateSchema,captcha.check,authenticate);
-router.post('/',authenticate);
+router.post('/',authenticateSchema,captcha.check,authenticate);
+// router.post('/',authenticate);
 router.post('/refresh',refreshTokenSchema, refreshToken);
 router.post('/revoke', jwtAuthorize, revokeTokenSchema, revokeToken);
 

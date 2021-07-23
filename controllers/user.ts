@@ -46,7 +46,6 @@ async function authenticateUser(username: string, password: string, ipAddress: s
 
     await user.save()
     return {
-        ...user.toJSON(),
         jwtToken,
         refreshToken: refreshToken.token
     };
