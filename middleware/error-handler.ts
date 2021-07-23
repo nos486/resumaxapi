@@ -10,10 +10,14 @@ function errorHandler(err: Error|Array<Error>, req:Request,res:Response,next:Nex
 
         switch (true) {
             case err.name === 'Error':
-                const is404 = err.name.toLowerCase().endsWith('not found');
-                const statusCode = is404 ? 404 : 400;
-                return res.status(statusCode).json({ message: err.message });
-
+                if(err.message.toLowerCase().endsWith('not found')){
+                    return res.status(404).json({ message: err.message });
+                }
+                if(err.message.toLowerCase().indexOf('forbidden') !== -1){
+                    return res.status(403).json({ message: err.message });
+                }else {
+                    return res.status(400).json({ message: err.message });
+                }
             case err.name === 'ValidationError':
                 // mongoose validation error
                 return res.status(400).json({ message: err.message });
