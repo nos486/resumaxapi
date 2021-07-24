@@ -70,7 +70,6 @@ async function getUserByUsername(username: string): Promise<IUser> {
 
 
 
-
 async function hasUsername(username: string): Promise<boolean> {
     return !!(await User.findOne({username}))
 }

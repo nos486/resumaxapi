@@ -4,8 +4,6 @@ import cors from "cors"
 import router from "./routes"
 import {dbConnect} from "./db";
 import errorHandler from "./middleware/error-handler";
-import swaggerUi from "swagger-ui-express"
-import swaggerDoc from './swagger.json'
 const app = express()
 
 //json body parser
@@ -22,11 +20,9 @@ app.use( '/static',express.static('public'))
 //routes
 app.use('/api/v1', router);
 
-
 // global error handler
 app.use(errorHandler);
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 
 dbConnect()

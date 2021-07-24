@@ -1,31 +1,27 @@
-import express, { Request, Response, NextFunction} from 'express';
-import User, {IEducation, IExperience, IUser, ROLE} from "../models/user";
-import Joi from "joi";
-import userController from "../controllers/user";
-import captcha from "../middleware/captcha"
-import validateRequest from "../middleware/validate-request";
+import express, {NextFunction, Request, Response} from 'express';
 import jwtAuthorize from "../middleware/jwt-authorize";
-import user from "../controllers/user";
+import userValidators from "../validators/user.validators"
+import {ISkills} from "../models/user";
 
 const router = express.Router();
 
 
 router.get('/',jwtAuthorize,getUserFullDetail)
-router.post('/',jwtAuthorize,updateUserValidate,updateUser)
-router.get('/:username',getUserByUsername)
+router.post('/',jwtAuthorize,userValidators.updateUserValidate,updateUser)
 
-router.post('/about',jwtAuthorize,updateAboutValidate,updateAbout)
-router.post('/skills',jwtAuthorize,setSkillsValidate,setSkills)
-router.post('/experiences',jwtAuthorize,setExperienceValidate,setExperience)
-router.post('/educations',jwtAuthorize,setEducationsValidate,setEducations)
-router.post('/licenses',jwtAuthorize,setLicensesValidate,setLicenses)
+router.get('/about',jwtAuthorize,getUserAbout)
+router.post('/about',jwtAuthorize,userValidators.updateAboutValidate,updateAbout)
 
 
-function getUserByUsername (req: Request, res: Response, next: NextFunction) {
-    userController.getUserByUsername(req.params.username).then((user)=>{
-        res.json(user)
-    }).catch(next)
-}
+router.put("/skill",jwtAuthorize,userValidators.setSkillValidate,addSkill)
+router.get('/skill/:id',jwtAuthorize,getSkill)
+router.post('/skill/:id',jwtAuthorize,userValidators.setSkillValidate,updateSkill)
+router.delete('/skill/:id',jwtAuthorize,deleteSkill)
+
+router.post('/experiences',jwtAuthorize,userValidators.setExperienceValidate,setExperience)
+router.post('/educations',jwtAuthorize,userValidators.setEducationsValidate,setEducations)
+router.post('/licenses',jwtAuthorize,userValidators.setLicensesValidate,setLicenses)
+
 
 
 function getUser (req: Request, res: Response, next: NextFunction) {
@@ -36,6 +32,13 @@ function getUser (req: Request, res: Response, next: NextFunction) {
 function getUserFullDetail(req: Request, res: Response, next: NextFunction) {
     res.json(req.user.toJSON())
 }
+
+function getUserAbout(req: Request, res: Response, next: NextFunction) {
+    res.json({"about":req.user.about})
+}
+
+
+
 
 function getExperiences(req: Request, res: Response, next: NextFunction) {
     res.json(req.user.toJSON().experiences)
@@ -50,27 +53,6 @@ function getLicenses(req: Request, res: Response, next: NextFunction) {
 }
 
 
-function updateUserValidate(req: Request, res: Response, next: NextFunction) {
-
-    const schema = Joi.object({
-        firstName: Joi.string().min(2).max(64),
-        lastName: Joi.string().min(2).max(64),
-        gender: Joi.string().valid("male","female","undisclosed"),
-        email: Joi.string().email(),
-        phone: Joi.string().min(2).max(64),
-        website: Joi.string().min(2).max(64),
-        github: Joi.string().min(2).max(64),
-        linkedin: Joi.string().min(2).max(64),
-        country: Joi.string().min(2).max(64),
-        city: Joi.string().min(2).max(64),
-        birthday : Joi.date(),
-        about: Joi.string().min(2).max(1000),
-        languages: Joi.array().items(Joi.string()),
-    });
-    validateRequest(req, next, schema);
-}
-
-
 function updateUser(req: Request, res: Response, next: NextFunction) {
     Object.entries(req.body).forEach(([key, value]) => {
         // @ts-ignore
@@ -82,13 +64,6 @@ function updateUser(req: Request, res: Response, next: NextFunction) {
     }).catch(next)
 }
 
-function updateAboutValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.object({
-        about: Joi.string().required().max(1000),
-    });
-    validateRequest(req, next, schema);
-}
-
 
 function updateAbout(req: Request, res: Response, next: NextFunction) {
     req.user.about = req.body.about
@@ -97,35 +72,58 @@ function updateAbout(req: Request, res: Response, next: NextFunction) {
     }).catch(next)
 }
 
-function setSkillsValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
-        title: Joi.string().required().min(2).max(64),
-        list : Joi.array().items(Joi.string()),
-        icon : Joi.string().min(2).max(64),
-    });
-    validateRequest(req, next, schema);
-}
 
 
-function setSkills(req: Request, res: Response, next: NextFunction) {
-    req.user.skills = req.body
+function addSkill(req: Request, res: Response, next: NextFunction) {
+    req.user.skills.push(req.body)
     req.user.save().then(r => {
-        res.json({ message: 'Skills updated' })
+        res.json(req.user.skills)
     }).catch(next)
 }
 
 
-function setExperienceValidate(req: Request, res: Response, next: NextFunction) {
+function getSkill(req: Request, res: Response, next: NextFunction) {
+    let skill = req.user.skills.find((skill)=>{
+        return skill._id == req.params.id
+    })
+    if(skill){
+        res.json(skill)
+    }else {
+        next(new Error("not found"))
+    }
+}
 
-    const schema = Joi.array().items({
-        title: Joi.string().required().min(2).max(64),
-        company: Joi.string().required().min(2).max(64),
-        startDate : Joi.date().required(),
-        endDate : Joi.date(),
-        atThisRole : Joi.boolean(),
-        description : Joi.string().max(1000),
-    });
-    validateRequest(req, next, schema);
+function updateSkill(req: Request, res: Response, next: NextFunction) {
+
+    let index = req.user.skills.findIndex((skill,index)=>{
+        if(skill._id == req.params.id) return index
+    })
+
+
+    if(index != -1){
+        req.user.skills[index] = {_id:req.params.id,...req.body}
+        req.user.save().then(r => {
+            res.json(req.user.skills[index])
+        }).catch(next)
+    }else {
+        next(new Error("id not found"))
+    }
+}
+
+function deleteSkill(req: Request, res: Response, next: NextFunction) {
+
+    let index = req.user.skills.findIndex((skill,index)=>{
+        if(skill._id == req.params.id) return index
+    })
+
+    if(index != -1){
+        req.user.skills.splice(index,1)
+        req.user.save().then(r => {
+            res.json(req.user.skills)
+        }).catch(next)
+    }else {
+        next(new Error("id not found"))
+    }
 }
 
 
@@ -136,17 +134,6 @@ function setExperience(req: Request, res: Response, next: NextFunction) {
     }).catch(next)
 }
 
-function setEducationsValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
-        school: Joi.string().required().min(2).max(64),
-        degree: Joi.string().required().min(2).max(64),
-        field: Joi.string().required().min(2).max(64),
-        startDate : Joi.date().required(),
-        endDate : Joi.date().required(),
-        description : Joi.string().max(1000),
-    });
-    validateRequest(req, next, schema);
-}
 
 
 function setEducations(req: Request, res: Response, next: NextFunction) {
@@ -156,16 +143,6 @@ function setEducations(req: Request, res: Response, next: NextFunction) {
     }).catch(next)
 }
 
-function setLicensesValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
-        name: Joi.string().required().min(2).max(64),
-        issuingOrganization: Joi.string().required().min(2).max(64),
-        issueDate : Joi.date().required(),
-        credentialID : Joi.string().max(128),
-        credentialUrl : Joi.string().max(128),
-    });
-    validateRequest(req, next, schema);
-}
 
 
 function setLicenses(req: Request, res: Response, next: NextFunction) {
