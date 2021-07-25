@@ -37,17 +37,9 @@ function setSkillValidate(req: Request, res: Response, next: NextFunction) {
     validator.validateRequestBody(req, next, schema);
 }
 
-function setSkillsValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
-        title: Joi.string().required().min(2).max(64),
-        list: Joi.array().items(Joi.string()),
-        icon: Joi.string().min(2).max(64),
-    });
-    validator.validateRequestBody(req, next, schema);
-}
 
 function setExperienceValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
+    const schema = Joi.object({
         title: Joi.string().required().min(2).max(64),
         company: Joi.string().required().min(2).max(64),
         startDate: Joi.date().required(),
@@ -58,8 +50,8 @@ function setExperienceValidate(req: Request, res: Response, next: NextFunction) 
     validator.validateRequestBody(req, next, schema);
 }
 
-function setEducationsValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
+function setEducationValidate(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object({
         school: Joi.string().required().min(2).max(64),
         degree: Joi.string().required().min(2).max(64),
         field: Joi.string().required().min(2).max(64),
@@ -70,8 +62,8 @@ function setEducationsValidate(req: Request, res: Response, next: NextFunction) 
     validator.validateRequestBody(req, next, schema);
 }
 
-function setLicensesValidate(req: Request, res: Response, next: NextFunction) {
-    const schema = Joi.array().items({
+function setLicenseValidate(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object({
         name: Joi.string().required().min(2).max(64),
         issuingOrganization: Joi.string().required().min(2).max(64),
         issueDate: Joi.date().required(),
@@ -86,8 +78,7 @@ export default {
     updateUserValidate,
     updateAboutValidate,
     setSkillValidate,
-    setSkillsValidate,
-    setEducationsValidate,
+    setEducationValidate,
     setExperienceValidate,
-    setLicensesValidate,
+    setLicenseValidate,
 }

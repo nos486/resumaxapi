@@ -10,15 +10,16 @@ import swaggerDoc from "../swagger.json";
 
 
 const router = express.Router();
-router.get("/",(req, res) => {
+router.get("/", (req, res) => {
     res.send("CV Maker API V1")
 })
 
+
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
-router.use("/captcha",captcha.generate)
-router.use("/authenticate",authenticateRouter)
-router.use("/register",registerRouter)
-router.use("/user",userRouter)
-router.use("/users",usersRouter)
+router.use("/captcha", captcha.generate)
+router.use("/authenticate", authenticateRouter)
+router.use("/register", registerRouter)
+router.use("/user", userRouter)
+router.use("/users", usersRouter)
 
 export = router

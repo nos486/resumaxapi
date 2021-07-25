@@ -4,10 +4,11 @@ import cors from "cors"
 import router from "./routes"
 import {dbConnect} from "./db";
 import errorHandler from "./middleware/error-handler";
+
 const app = express()
 
 //json body parser
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json())
 app.use(cors({
     origin: (origin, callback) => callback(null, true),
@@ -15,14 +16,13 @@ app.use(cors({
     exposedHeaders: 'Key',
 }))
 
-app.use( '/static',express.static('public'))
+app.use('/static', express.static('public'))
 
 //routes
 app.use('/api/v1', router);
 
 // global error handler
 app.use(errorHandler);
-
 
 
 dbConnect()

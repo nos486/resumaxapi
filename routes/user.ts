@@ -1,156 +1,115 @@
 import express, {NextFunction, Request, Response} from 'express';
 import jwtAuthorize from "../middleware/jwt-authorize";
 import userValidators from "../validators/user.validators"
-import {ISkills} from "../models/user";
+import {IEducation, IExperience, ILicense, ISkills} from "../models/user";
 
 const router = express.Router();
 
 
-router.get('/',jwtAuthorize,getUserFullDetail)
-router.post('/',jwtAuthorize,userValidators.updateUserValidate,updateUser)
+router.get('/', jwtAuthorize, getUser)
+router.post('/', jwtAuthorize, userValidators.updateUserValidate, updateUser)
 
-router.get('/about',jwtAuthorize,getUserAbout)
-router.post('/about',jwtAuthorize,userValidators.updateAboutValidate,updateAbout)
+router.get('/skill/:id', jwtAuthorize, getArrayItem("skills"))
+router.get('/skills', jwtAuthorize, getParam("skills"))
+router.put("/skill", jwtAuthorize, userValidators.setSkillValidate, addArrayItem("skills"))
+router.post('/skill/:id', jwtAuthorize, userValidators.setSkillValidate, updateArrayItem("skills"))
+router.delete('/skill/:id', jwtAuthorize, deleteArrayItem("skills"))
+
+router.get('/experience/:id', jwtAuthorize, getArrayItem("experiences"))
+router.get('/experiences', jwtAuthorize, getParam("experiences"))
+router.put("/experience", jwtAuthorize, userValidators.setExperienceValidate, addArrayItem("experiences"))
+router.post('/experience/:id', jwtAuthorize, userValidators.setExperienceValidate, updateArrayItem("experiences"))
+router.delete('/experience/:id', jwtAuthorize, deleteArrayItem("experiences"))
+
+router.get('/education/:id', jwtAuthorize, getArrayItem("educations"))
+router.get('/educations', jwtAuthorize, getParam("educations"))
+router.put("/education", jwtAuthorize, userValidators.setEducationValidate, addArrayItem("educations"))
+router.post('/education/:id', jwtAuthorize, userValidators.setEducationValidate, updateArrayItem("educations"))
+router.delete('/education/:id', jwtAuthorize, deleteArrayItem("educations"))
+
+router.get('/license/:id', jwtAuthorize, getArrayItem("licenses"))
+router.get('/licenses', jwtAuthorize, getParam("licenses"))
+router.put("/license", jwtAuthorize, userValidators.setLicenseValidate, addArrayItem("licenses"))
+router.post('/license/:id', jwtAuthorize, userValidators.setLicenseValidate, updateArrayItem("licenses"))
+router.delete('/license/:id', jwtAuthorize, deleteArrayItem("licenses"))
 
 
-router.put("/skill",jwtAuthorize,userValidators.setSkillValidate,addSkill)
-router.get('/skill/:id',jwtAuthorize,getSkill)
-router.post('/skill/:id',jwtAuthorize,userValidators.setSkillValidate,updateSkill)
-router.delete('/skill/:id',jwtAuthorize,deleteSkill)
-
-router.post('/experiences',jwtAuthorize,userValidators.setExperienceValidate,setExperience)
-router.post('/educations',jwtAuthorize,userValidators.setEducationsValidate,setEducations)
-router.post('/licenses',jwtAuthorize,userValidators.setLicensesValidate,setLicenses)
-
-
-
-function getUser (req: Request, res: Response, next: NextFunction) {
-    let { experiences, educations, licenses, languages,...user } = req.user.toJSON();
-    res.json(user)
-}
-
-function getUserFullDetail(req: Request, res: Response, next: NextFunction) {
+function getUser(req: Request, res: Response) {
     res.json(req.user.toJSON())
 }
 
-function getUserAbout(req: Request, res: Response, next: NextFunction) {
-    res.json({"about":req.user.about})
-}
-
-
-
-
-function getExperiences(req: Request, res: Response, next: NextFunction) {
-    res.json(req.user.toJSON().experiences)
-}
-
-function getEducations(req: Request, res: Response, next: NextFunction) {
-    res.json(req.user.toJSON().educations)
-}
-
-function getLicenses(req: Request, res: Response, next: NextFunction) {
-    res.json(req.user.toJSON().licenses)
-}
-
-
 function updateUser(req: Request, res: Response, next: NextFunction) {
     Object.entries(req.body).forEach(([key, value]) => {
-        // @ts-ignore
-        req.user[key] = value
+        req.user.set(key, value)
     })
 
-    req.user.save().then(r => {
+    req.user.save().then(() => {
         res.json(req.user)
     }).catch(next)
 }
 
-
-function updateAbout(req: Request, res: Response, next: NextFunction) {
-    req.user.about = req.body.about
-    req.user.save().then(r => {
-        res.json({ message: 'About updated' })
-    }).catch(next)
-}
-
-
-
-function addSkill(req: Request, res: Response, next: NextFunction) {
-    req.user.skills.push(req.body)
-    req.user.save().then(r => {
-        res.json(req.user.skills)
-    }).catch(next)
-}
-
-
-function getSkill(req: Request, res: Response, next: NextFunction) {
-    let skill = req.user.skills.find((skill)=>{
-        return skill._id == req.params.id
-    })
-    if(skill){
-        res.json(skill)
-    }else {
-        next(new Error("not found"))
+function getParam(paramName: string) {
+    return (req: Request, res: Response) => {
+        res.json(req.user.get(paramName))
     }
 }
 
-function updateSkill(req: Request, res: Response, next: NextFunction) {
-
-    let index = req.user.skills.findIndex((skill,index)=>{
-        if(skill._id == req.params.id) return index
-    })
-
-
-    if(index != -1){
-        req.user.skills[index] = {_id:req.params.id,...req.body}
-        req.user.save().then(r => {
-            res.json(req.user.skills[index])
+function addArrayItem(arrayName: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        req.user.get(arrayName).push(req.body)
+        req.user.save().then(() => {
+            res.json(req.user.get(arrayName))
         }).catch(next)
-    }else {
-        next(new Error("id not found"))
     }
 }
 
-function deleteSkill(req: Request, res: Response, next: NextFunction) {
-
-    let index = req.user.skills.findIndex((skill,index)=>{
-        if(skill._id == req.params.id) return index
-    })
-
-    if(index != -1){
-        req.user.skills.splice(index,1)
-        req.user.save().then(r => {
-            res.json(req.user.skills)
-        }).catch(next)
-    }else {
-        next(new Error("id not found"))
+function getArrayItem(arrayName: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        let arrayItem = req.user.get(arrayName).find((array: ISkills | IExperience | IEducation | ILicense) => {
+            return array._id == req.params.id
+        })
+        if (arrayItem) {
+            res.json(arrayItem)
+        } else {
+            next(new Error("not found"))
+        }
     }
 }
 
+function updateArrayItem(arrayName: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        let index = req.user.get(arrayName).findIndex((array: ISkills | IExperience | IEducation | ILicense, index: number) => {
+            if (array._id == req.params.id) return index
+        })
 
-function setExperience(req: Request, res: Response, next: NextFunction) {
-    req.user.experiences = req.body
-    req.user.save().then(r => {
-        res.json({ message: 'Experience updated' })
-    }).catch(next)
+        if (index != -1) {
+            req.user.get(arrayName)[index] = {_id: req.params.id, ...req.body}
+            req.user.save().then(() => {
+                res.json(req.user.get(arrayName)[index])
+            }).catch(next)
+        } else {
+            next(new Error("id not found"))
+        }
+    }
+
 }
 
+function deleteArrayItem(arrayName: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        let index = req.user.get(arrayName).findIndex((array: ISkills | IExperience | IEducation | ILicense, index: number) => {
+            if (array._id == req.params.id) return index
+        })
 
+        if (index != -1) {
+            req.user.get(arrayName).splice(index, 1)
+            req.user.save().then(() => {
+                res.json(req.user.get(arrayName))
+            }).catch(next)
+        } else {
+            next(new Error("id not found"))
+        }
+    }
 
-function setEducations(req: Request, res: Response, next: NextFunction) {
-    req.user.educations = req.body
-    req.user.save().then(r => {
-        res.json({ message: 'Educations updated' })
-    }).catch(next)
 }
-
-
-
-function setLicenses(req: Request, res: Response, next: NextFunction) {
-    req.user.licenses = req.body
-    req.user.save().then(r => {
-        res.json({ message: 'Licenses updated' })
-    }).catch(next)
-}
-
 
 export default router

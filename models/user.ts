@@ -11,8 +11,8 @@ export enum GENDER {
     UNDISCLOSED = 'undisclosed'
 }
 
-export interface IExperience{
-    _id? : string,
+export interface IExperience {
+    _id?: string,
     title: string,
     company: string,
     startDate: Date,
@@ -21,8 +21,8 @@ export interface IExperience{
     description?: string,
 }
 
-export interface IEducation{
-    _id? : string,
+export interface IEducation {
+    _id?: string,
     school: string,
     degree: string,
     field: string,
@@ -31,8 +31,8 @@ export interface IEducation{
     description?: string,
 }
 
-export interface ILicense{
-    _id? : string,
+export interface ILicense {
+    _id?: string,
     name: string,
     issuingOrganization: string,
     issueDate: Date,
@@ -40,120 +40,120 @@ export interface ILicense{
     credentialUrl?: string,
 }
 
-export interface IUserSettings{
-    _id? : string,
+export interface IUserSettings {
+    _id?: string,
     color: string,
 }
 
-export interface ISkills{
-    _id? : string,
-    title : string,
-    list : string[]
-    icon : string
+export interface ISkills {
+    _id?: string,
+    title: string,
+    list: string[]
+    icon: string
 }
 
-export interface IUser extends Document{
+export interface IUser extends Document {
     username: string
-    firstName? : string
-    lastName? : string
-    gender : GENDER
-    role :ROLE
+    firstName?: string
+    lastName?: string
+    gender: GENDER
+    role: ROLE
     email: string
-    isEmailValid : boolean
-    password : string
-    headLine? : string
-    phone? : string
-    website? : string
-    github? : string
-    linkedin? : string
+    isEmailValid: boolean
+    password: string
+    headLine?: string
+    phone?: string
+    website?: string
+    github?: string
+    linkedin?: string
     country?: string,
     city?: string,
-    birthday? : Date
-    about? : string
-    skills : ISkills[]
-    experiences : IExperience[]
-    educations : IEducation[]
-    licenses : ILicense[]
-    languages : string[]
-    avatarPath? :string
-    settings : IUserSettings
+    birthday?: Date
+    about?: string
+    skills: ISkills[]
+    experiences: IExperience[]
+    educations: IEducation[]
+    licenses: ILicense[]
+    languages: string[]
+    avatarPath?: string
+    settings: IUserSettings
 }
 
 
 const schemaSkills = new Schema({
-    title: {type: String ,required: true },
+    title: {type: String, required: true},
     list: [{type: String}],
-    icon : {type: String},
+    icon: {type: String},
 });
 
 
 const schemaExperience = new Schema({
-    title: {type: String ,required: true },
-    company: {type: String ,required: true },
-    startDate: {type: Date ,required: true },
+    title: {type: String, required: true},
+    company: {type: String, required: true},
+    startDate: {type: Date, required: true},
     endDate: Date,
-    atThisRole: {type: Boolean ,default: false },
+    atThisRole: {type: Boolean, default: false},
     description: String
 });
 
 const schemaEducation = new Schema({
-    school: {type: String ,required: true },
-    degree: {type: String ,required: true },
-    field: {type: String ,required: true },
-    startDate: {type: Date ,required: true },
-    endDate: {type: Date ,required: true },
+    school: {type: String, required: true},
+    degree: {type: String, required: true},
+    field: {type: String, required: true},
+    startDate: {type: Date, required: true},
+    endDate: {type: Date, required: true},
     description: String
 });
 
 
 const schemaLicense = new Schema({
-    name: {type: String ,required: true },
-    issuingOrganization: {type: String ,required: true },
-    issueDate: {type: Date ,required: true },
+    name: {type: String, required: true},
+    issuingOrganization: {type: String, required: true},
+    issueDate: {type: Date, required: true},
     credentialID: String,
     credentialUrl: String
 });
 
 const schemaUserSettings = new Schema({
-    color: {type: String ,required: true},
+    color: {type: String, required: true},
 });
 
-const defaultUserSettings:IUserSettings = {
-    color : "orange"
+const defaultUserSettings: IUserSettings = {
+    color: "orange"
 }
 
 const schema = new Schema(
     {
         username: {type: String, unique: true, required: true,},
-        firstName : {type: String},
-        lastName : {type: String},
-        gender : {type: String, enum : Object.values(GENDER), default : GENDER.UNDISCLOSED},
-        role: {type: String, enum : Object.values(ROLE), default : ROLE.USER},
-        email :{type : String, unique : true,},
-        isEmailValid :{type:Boolean, default : false},
-        password :{type : String, required: true,},
-        headLine : {type : String},
-        phone:{type : String},
-        website:{type : String},
-        github:{type : String},
-        linkedin:{type : String},
+        firstName: {type: String},
+        lastName: {type: String},
+        gender: {type: String, enum: Object.values(GENDER), default: GENDER.UNDISCLOSED},
+        role: {type: String, enum: Object.values(ROLE), default: ROLE.USER},
+        email: {type: String, unique: true,},
+        isEmailValid: {type: Boolean, default: false},
+        password: {type: String, required: true,},
+        headLine: {type: String},
+        phone: {type: String},
+        website: {type: String},
+        github: {type: String},
+        linkedin: {type: String},
         country: {type: String},
         city: {type: String},
-        birthday:{type : Number},
-        about:{type : String},
-        skills : [schemaSkills],
-        experiences : [schemaExperience],
-        educations : [schemaEducation],
-        licenses : [schemaLicense],
-        languages : [{type : String}],
-        avatarPath : {type : String},
-        settings: {type :schemaUserSettings ,required:true ,default:defaultUserSettings}
+        birthday: {type: Number},
+        about: {type: String},
+        skills: [schemaSkills],
+        experiences: [schemaExperience],
+        educations: [schemaEducation],
+        licenses: [schemaLicense],
+        languages: [{type: String}],
+        avatarPath: {type: String},
+        settings: {type: schemaUserSettings, required: true, default: defaultUserSettings}
     },
     {
         timestamps: true,
-        toJSON :{
-            virtuals : true,
-            versionKey : false,
+        toJSON: {
+            virtuals: true,
+            versionKey: false,
             transform: ((doc, ret) => {
                 // remove these props when object is serialized
                 delete ret.id;
@@ -165,7 +165,6 @@ const schema = new Schema(
         }
     },
 );
-
 
 
 const User = model<IUser>('User', schema);

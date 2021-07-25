@@ -1,4 +1,4 @@
-import RefreshToken,{IRefreshToken} from "../models/refresh-token";
+import RefreshToken, {IRefreshToken} from "../models/refresh-token";
 import {IUser, ROLE} from "../models/user";
 import jwt from "jsonwebtoken";
 import config from "../config";
@@ -52,24 +52,24 @@ async function deleteRefreshToken(token: string) {
     refreshToken.delete()
 }
 
-async function deleteRefreshTokenCheckUser(user: IUser,token: string,adminCanRevoke:boolean = true){
+async function deleteRefreshTokenCheckUser(user: IUser, token: string, adminCanRevoke: boolean = true) {
     let refreshToken = await RefreshToken.findOne({token}) as IRefreshToken
     if (!refreshToken) throw new Error('Invalid token');
 
-    if(refreshToken.user.equals(user.id) || adminCanRevoke && user.role == ROLE.ADMIN){
+    if (refreshToken.user.equals(user.id) || adminCanRevoke && user.role == ROLE.ADMIN) {
         refreshToken.delete()
-    }else {
+    } else {
         throw new Error('Forbidden');
     }
 }
 
-async function getRefreshTokenByToken(token:string) {
+async function getRefreshTokenByToken(token: string) {
     const refreshToken = await RefreshToken.findOne({token}).populate('user');
     if (!refreshToken) throw 'Invalid token';
     return refreshToken;
 }
 
-async function getRefreshTokenByUser(user:IUser) {
+async function getRefreshTokenByUser(user: IUser) {
     return RefreshToken.findOne({user}).populate('user');
 }
 

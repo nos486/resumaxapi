@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 
-
 async function createUser(username: string, email: string, password: string): Promise<IUser> {
     username = username.toLowerCase()
 
@@ -69,7 +68,6 @@ async function getUserByUsername(username: string): Promise<IUser> {
 }
 
 
-
 async function hasUsername(username: string): Promise<boolean> {
     return !!(await User.findOne({username}))
 }
@@ -77,7 +75,6 @@ async function hasUsername(username: string): Promise<boolean> {
 async function hasEmail(email: string): Promise<boolean> {
     return !!(await User.findOne({email}))
 }
-
 
 
 export default {
