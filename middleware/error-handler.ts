@@ -1,13 +1,12 @@
-import {Request, Response} from "express";
+import {Request, Response,NextFunction} from "express";
 
-function errorHandler(err: Error | Array<Error>, req: Request, res: Response) {
-    console.log(err)
+function errorHandler(err: Error | Array<Error>, req: Request, res: Response,next:NextFunction) {
+    if(process.env.NODE_ENV == "development") console.log(err)
     if (Array.isArray(err)) {
         return res.status(400).json(err.map((error) => {
             return {message: error.message}
         }));
     } else {
-
         switch (true) {
             case err.name === 'Error':
                 if (err.message.toLowerCase().endsWith('not found')) {
