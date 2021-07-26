@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon index.ts",
-    "start": "tsc --project ./ && node build/index.js"
+    "dev": "nodemon index.ts",
+    "tsc": "./node_modules/typescript/bin/tsc",
+    "build": "tsc --project ./",
+    "postinstall": "npm run build",
+    "start": "node build/index.js"
   },
   "author": "",
   "license": "ISC",
