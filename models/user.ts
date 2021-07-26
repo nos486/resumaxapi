@@ -19,6 +19,7 @@ export interface IExperience {
     endDate?: Date,
     atThisRole?: boolean,
     description?: string,
+    icon: string
 }
 
 export interface IEducation {
@@ -82,8 +83,8 @@ export interface IUser extends Document {
 
 const schemaSkills = new Schema({
     title: {type: String, required: true},
-    list: [{type: String}],
-    icon: {type: String},
+    list: {type: [{type: String}], default: []},
+    icon: {type: String, default: ""},
 });
 
 
@@ -91,9 +92,10 @@ const schemaExperience = new Schema({
     title: {type: String, required: true},
     company: {type: String, required: true},
     startDate: {type: Date, required: true},
-    endDate: Date,
+    endDate: {type: Date, default: null},
     atThisRole: {type: Boolean, default: false},
-    description: String
+    description: {type: String, default: "true"},
+    icon: {type: String, default: ""},
 });
 
 const schemaEducation = new Schema({
@@ -102,7 +104,7 @@ const schemaEducation = new Schema({
     field: {type: String, required: true},
     startDate: {type: Date, required: true},
     endDate: {type: Date, required: true},
-    description: String
+    description: {type: String, default: "true"},
 });
 
 
@@ -110,8 +112,8 @@ const schemaLicense = new Schema({
     name: {type: String, required: true},
     issuingOrganization: {type: String, required: true},
     issueDate: {type: Date, required: true},
-    credentialID: String,
-    credentialUrl: String
+    credentialID: {type: String, default: "true"},
+    credentialUrl: {type: String, default: "true"},
 });
 
 const schemaUserSettings = new Schema({
@@ -125,27 +127,27 @@ const defaultUserSettings: IUserSettings = {
 const schema = new Schema(
     {
         username: {type: String, unique: true, required: true,},
-        firstName: {type: String},
-        lastName: {type: String},
+        firstName: {type: String, default: ""},
+        lastName: {type: String, default: ""},
         gender: {type: String, enum: Object.values(GENDER), default: GENDER.UNDISCLOSED},
         role: {type: String, enum: Object.values(ROLE), default: ROLE.USER},
-        email: {type: String, unique: true,},
+        email: {type: String, unique: true, required: true},
         isEmailValid: {type: Boolean, default: false},
-        password: {type: String, required: true,},
-        headLine: {type: String},
-        phone: {type: String},
-        website: {type: String},
-        github: {type: String},
-        linkedin: {type: String},
-        country: {type: String},
-        city: {type: String},
-        birthday: {type: Number},
-        about: {type: String},
-        skills: [schemaSkills],
-        experiences: [schemaExperience],
-        educations: [schemaEducation],
-        licenses: [schemaLicense],
-        languages: [{type: String}],
+        password: {type: String, required: true},
+        headLine: {type: String, default: ""},
+        phone: {type: String, default: ""},
+        website: {type: String, default: ""},
+        github: {type: String, default: ""},
+        linkedin: {type: String, default: ""},
+        country: {type: String, default: ""},
+        city: {type: String, default: ""},
+        birthday: {type: Date, default: null},
+        about: {type: String, default: ""},
+        skills: {type: [schemaSkills], default: []},
+        experiences: {type: [schemaExperience], default: []},
+        educations: {type: [schemaEducation], default: []},
+        licenses: {type: [schemaLicense], default: []},
+        languages: {type: [{type: String}], default: []},
         avatarPath: {type: String},
         settings: {type: schemaUserSettings, required: true, default: defaultUserSettings}
     },

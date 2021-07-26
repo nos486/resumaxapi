@@ -46,6 +46,7 @@ function setExperienceValidate(req: Request, res: Response, next: NextFunction) 
         endDate: Joi.date(),
         atThisRole: Joi.boolean(),
         description: Joi.string().max(1000),
+        icon: Joi.string().min(2).max(64),
     });
     validator.validateRequestBody(req, next, schema);
 }
