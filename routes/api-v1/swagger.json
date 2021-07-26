@@ -13,7 +13,11 @@
   "servers": [
     {
       "url": "http://localhost:3000/api/v1",
-      "description": "The production API server"
+      "description": "The development API server"
+    },
+    {
+      "description": "The production API server",
+      "url": "https://cvccv.herokuapp.com/api/v1"
     }
   ],
   "tags": [
