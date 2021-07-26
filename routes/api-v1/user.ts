@@ -78,12 +78,14 @@ function getArrayItem(arrayName: string) {
 
 function updateArrayItem(arrayName: string) {
     return (req: Request, res: Response, next: NextFunction) => {
-        let index = req.user.get(arrayName).findIndex((array: ISkills | IExperience | IEducation | ILicense, index: number) => {
-            if (array._id == req.params.id) return index
+        let index = req.user.get(arrayName).findIndex((array: ISkills | IExperience | IEducation | ILicense) => {
+            return (array._id == req.params.id)
         })
 
         if (index != -1) {
-            req.user.get(arrayName)[index] = {_id: req.params.id, ...req.body}
+            let array = req.user.get(arrayName)
+            console.log(array,index)
+            array[index] = {_id: req.params.id, ...req.body}
             req.user.save().then(() => {
                 res.json(req.user.get(arrayName)[index])
             }).catch(next)
@@ -96,8 +98,8 @@ function updateArrayItem(arrayName: string) {
 
 function deleteArrayItem(arrayName: string) {
     return (req: Request, res: Response, next: NextFunction) => {
-        let index = req.user.get(arrayName).findIndex((array: ISkills | IExperience | IEducation | ILicense, index: number) => {
-            if (array._id == req.params.id) return index
+        let index = req.user.get(arrayName).findIndex((array: ISkills | IExperience | IEducation | ILicense) => {
+            return (array._id == req.params.id)
         })
 
         if (index != -1) {
