@@ -1,14 +1,13 @@
 import RefreshToken, {IRefreshToken} from "../models/refresh-token";
 import {IUser, ROLE} from "../models/user";
 import jwt from "jsonwebtoken";
-import config from "../config";
 import {randomString} from "../utils";
 
 
 function generateJwtToken(user: IUser) {
     // create a jwt token containing the user id that expires in 15 minutes
     //todo change expiresIn
-    return jwt.sign({id: user.id}, config.secret, {expiresIn: '15d'});
+    return jwt.sign({id: user.id}, process.env.SECRET, {expiresIn: '15d'});
 }
 
 async function generateRefreshToken(user: IUser, ipAddress: string): Promise<IRefreshToken> {

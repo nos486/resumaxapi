@@ -1,6 +1,5 @@
 import {NextFunction, Request, Response} from "express";
 import jwt from "jsonwebtoken";
-import config from "../config";
 import userController from "../controllers/user";
 import {IUser} from "../models/user";
 
@@ -18,7 +17,7 @@ export default function jwtAuthorize(req: Request, res: Response, next: NextFunc
     if (bearerHeader) {
         const bearerToken = bearerHeader.split(' ')[1];
 
-        jwt.verify(bearerToken, config.secret, (err, decoded) => {
+        jwt.verify(bearerToken, process.env.SECRET, (err, decoded) => {
             if (err) {
                 throw new Error('Forbidden')
             } else {

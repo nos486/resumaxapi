@@ -7,6 +7,17 @@ import errorHandler from "./middleware/error-handler";
 
 const app = express()
 
+declare global {
+    namespace NodeJS {
+        interface ProcessEnv {
+            SECRET: string;
+            NODE_ENV: 'development' | 'production';
+            DB_USER?: string;
+            DB_PASSWORD: string;
+        }
+    }
+}
+
 //json body parser
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json())

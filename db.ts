@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import config from "./config"
 import userController from "./controllers/user"
 
 
@@ -11,7 +10,7 @@ const connectionOptions = {
 };
 
 function dbConnect() {
-    mongoose.connect(process.env.MONGODB_URI || `mongodb+srv://${config.dbUser}:${config.dbPassword}@cluster0.z8okb.mongodb.net/cvmaker?retryWrites=true&w=majority`, connectionOptions).then(async () => {
+    mongoose.connect(process.env.MONGODB_URI || `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.z8okb.mongodb.net/cvmaker?retryWrites=true&w=majority`, connectionOptions).then(async () => {
 
         // create admin user
         if (!await userController.hasUsername("admin")) {
