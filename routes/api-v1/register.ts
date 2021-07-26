@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction} from 'express';
-import userController from "../controllers/user";
-import authenticateValidator from "../validators/authenticate.validator";
-import captcha from "../middleware/captcha"
+import userController from "../../controllers/user";
+import authenticateValidator from "../../validators/authenticate.validator";
+import captcha from "../../middleware/captcha"
 
 const router = express.Router();
 

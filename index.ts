@@ -5,7 +5,7 @@ import router from "./routes"
 import {dbConnect} from "./db";
 import errorHandler from "./middleware/error-handler";
 
-const app = express()
+const  app = express()
 
 declare global {
     namespace NodeJS {
@@ -30,7 +30,7 @@ app.use(cors({
 app.use('/static', express.static('public'))
 
 //routes
-app.use('/api/v1', router);
+app.use('/', router);
 
 // global error handler
 app.use(errorHandler);
@@ -40,6 +40,9 @@ dbConnect()
 
 const port = process.env.PORT || 3000
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Example app listening at http://0.0.0.0:${port}`)
 })
+
+export default server
+

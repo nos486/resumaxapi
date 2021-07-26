@@ -1,9 +1,9 @@
 import express, {Request, Response, NextFunction} from 'express';
-import userController from "../controllers/user";
-import tokenController from "../controllers/token";
-import authenticateValidator from "../validators/authenticate.validator";
-import jwtAuthorize from "../middleware/jwt-authorize";
-import captcha from "../middleware/captcha";
+import userController from "../../controllers/user";
+import tokenController from "../../controllers/token";
+import authenticateValidator from "../../validators/authenticate.validator";
+import jwtAuthorize from "../../middleware/jwt-authorize";
+import captcha from "../../middleware/captcha";
 
 const router = express.Router();
 

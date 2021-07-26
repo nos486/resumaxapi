@@ -1,7 +1,7 @@
 import express, {NextFunction, Request, Response} from 'express';
-import jwtAuthorize from "../middleware/jwt-authorize";
-import userValidators from "../validators/user.validators"
-import {IEducation, IExperience, ILicense, ISkills} from "../models/user";
+import jwtAuthorize from "../../middleware/jwt-authorize";
+import userValidators from "../../validators/user.validators"
+import {IEducation, IExperience, ILicense, ISkills} from "../../models/user";
 
 const router = express.Router();
 
