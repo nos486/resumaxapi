@@ -7,7 +7,7 @@ function authenticateValidator(req: Request, res: Response, next: NextFunction) 
     const schema = Joi.object({
         username: Joi.string().required().min(4).max(20),
         password: Joi.string().required(),
-        captchaKey: Joi.string().required().uuid(),
+        key: Joi.string().required().uuid(),
         captcha: Joi.string().required().length(4),
     });
     validator.validateRequestBody(req, next, schema);

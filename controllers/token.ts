@@ -7,7 +7,7 @@ import {randomString} from "../utils";
 function generateJwtToken(user: IUser) {
     // create a jwt token containing the user id that expires in 15 minutes
     //todo change expiresIn
-    return jwt.sign({id: user.id}, process.env.SECRET, {expiresIn: '15d'});
+    return jwt.sign({id: user.id}, process.env.SECRET, {expiresIn: '1d'});
 }
 
 async function generateRefreshToken(user: IUser, ipAddress: string): Promise<IRefreshToken> {
@@ -26,7 +26,7 @@ async function generateRefreshToken(user: IUser, ipAddress: string): Promise<IRe
 
 async function refreshToken(token: string, ipAddress: string) {
     let refreshToken = await RefreshToken.findOne({token}).populate('user') as IRefreshToken
-    if (!refreshToken) throw new Error('Invalid token');
+    if (!refreshToken) throw new Error('Invalid refresh token');
     await RefreshToken.findOneAndDelete({user: refreshToken.user})
 
     let newRefreshToken = await generateRefreshToken(refreshToken.user, ipAddress);
@@ -34,7 +34,7 @@ async function refreshToken(token: string, ipAddress: string) {
 
     // return basic details and tokens
     return {
-        ...refreshToken.user.toJSON(),
+        // ...refreshToken.user.toJSON(),
         jwtToken: newJwtToken,
         refreshToken: newRefreshToken.token
     };

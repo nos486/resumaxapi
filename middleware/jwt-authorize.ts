@@ -12,14 +12,13 @@ declare global {
 }
 
 export default function jwtAuthorize(req: Request, res: Response, next: NextFunction) {
-    const bearerHeader = req.headers['authorization'];
+    const bearerToken = req.headers['authorization'];
 
-    if (bearerHeader) {
-        const bearerToken = bearerHeader.split(' ')[1];
+    if (bearerToken) {
 
         jwt.verify(bearerToken, process.env.SECRET, (err, decoded) => {
             if (err) {
-                throw new Error('Forbidden')
+                throw new Error('Invalid token')
             } else {
                 if (decoded != undefined) {
                     userController.getUserById(decoded.id).then((user) => {
@@ -31,13 +30,13 @@ export default function jwtAuthorize(req: Request, res: Response, next: NextFunc
                         }
                     })
                 } else {
-                    throw new Error('Forbidden')
+                    throw new Error('Invalid token')
                 }
             }
         })
     } else {
         // Forbidden
-        throw new Error('Forbidden')
+        throw new Error('Invalid token')
     }
 
 }
