@@ -26,7 +26,7 @@ function dbConnect() {
     });
 }
 
-mongoose.connection.on('disconnected', dbConnect);
+// mongoose.connection.on('disconnected', dbConnect);
 
 
 export {dbConnect}

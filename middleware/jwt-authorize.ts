@@ -12,9 +12,10 @@ declare global {
 }
 
 export default function jwtAuthorize(req: Request, res: Response, next: NextFunction) {
-    const bearerToken = req.headers['authorization'];
+    const bearerHeader = req.headers['authorization'];
 
-    if (bearerToken) {
+    if (bearerHeader) {
+        const bearerToken = bearerHeader.split(' ')[1];
 
         jwt.verify(bearerToken, process.env.SECRET, (err, decoded) => {
             if (err) {

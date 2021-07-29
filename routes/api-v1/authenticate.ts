@@ -16,7 +16,6 @@ router.post('/revoke', jwtAuthorize, authenticateValidator.revokeTokenValidator,
 
 function authenticate(req: Request, res: Response, next: NextFunction) {
     const {username, password} = req.body;
-    console.log(req.body)
     const ipAddress = req.ip;
     userController.authenticateUser(username, password, ipAddress)
         .then(({...user}) => {
