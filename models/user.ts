@@ -63,6 +63,7 @@ export interface IUser extends Document {
     isEmailValid: boolean
     password: string
     headLine?: string
+    icon?: string
     phone?: string
     website?: string
     github?: string
@@ -94,7 +95,7 @@ const schemaExperience = new Schema({
     startDate: {type: Date, required: true},
     endDate: {type: Date, default: null},
     atThisRole: {type: Boolean, default: false},
-    description: {type: String, default: "true"},
+    description: {type: String, default: ""},
     icon: {type: String, default: ""},
 });
 
@@ -104,7 +105,7 @@ const schemaEducation = new Schema({
     field: {type: String, required: true},
     startDate: {type: Date, required: true},
     endDate: {type: Date, required: true},
-    description: {type: String, default: "true"},
+    description: {type: String, default: ""},
 });
 
 
@@ -112,8 +113,8 @@ const schemaLicense = new Schema({
     name: {type: String, required: true},
     issuingOrganization: {type: String, required: true},
     issueDate: {type: Date, required: true},
-    credentialID: {type: String, default: "true"},
-    credentialUrl: {type: String, default: "true"},
+    credentialID: {type: String, default: ""},
+    credentialUrl: {type: String, default: ""},
 });
 
 const schemaUserSettings = new Schema({
@@ -135,6 +136,7 @@ const schema = new Schema(
         isEmailValid: {type: Boolean, default: false},
         password: {type: String, required: true},
         headLine: {type: String, default: ""},
+        icon: {type: String, default: ""},
         phone: {type: String, default: ""},
         website: {type: String, default: ""},
         github: {type: String, default: ""},

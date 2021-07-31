@@ -4,18 +4,20 @@ import validator from "../middleware/request-validator";
 
 function updateUserValidate(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.object({
-        firstName: Joi.string().min(2).max(64),
-        lastName: Joi.string().min(2).max(64),
+        firstName: Joi.string().min(2).max(64).allow(""),
+        lastName: Joi.string().min(2).max(64).allow(""),
+        headLine: Joi.string().min(2).max(64).allow(""),
+        icon: Joi.string().min(2).max(64).allow(""),
         gender: Joi.string().valid("male", "female", "undisclosed"),
         email: Joi.string().email(),
-        phone: Joi.string().min(2).max(64),
-        website: Joi.string().min(2).max(64),
-        github: Joi.string().min(2).max(64),
-        linkedin: Joi.string().min(2).max(64),
-        country: Joi.string().min(2).max(64),
-        city: Joi.string().min(2).max(64),
+        phone: Joi.string().min(4).max(64).allow(""),
+        website: Joi.string().min(4).max(64).allow(""),
+        github: Joi.string().min(4).max(64).allow(""),
+        linkedin: Joi.string().min(4).max(64).allow(""),
+        country: Joi.string().min(2).max(64).allow(""),
+        city: Joi.string().min(2).max(64).allow(""),
         birthday: Joi.date(),
-        about: Joi.string().min(2).max(1000),
+        about: Joi.string().min(4).max(1000).allow(""),
         languages: Joi.array().items(Joi.string()),
     });
     validator.validateRequestBody(req, next, schema);

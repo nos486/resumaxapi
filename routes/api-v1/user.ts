@@ -39,6 +39,7 @@ function getUser(req: Request, res: Response) {
 }
 
 function updateUser(req: Request, res: Response, next: NextFunction) {
+    console.log(req.body)
     Object.entries(req.body).forEach(([key, value]) => {
         req.user.set(key, value)
     })
