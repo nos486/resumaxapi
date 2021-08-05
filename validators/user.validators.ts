@@ -31,8 +31,8 @@ const licenceSchema = Joi.object({
     name: Joi.string().required().min(2).max(64),
     issuingOrganization: Joi.string().required().min(2).max(64),
     issueDate: Joi.date().required(),
-    credentialID: Joi.string().max(128),
-    credentialUrl: Joi.string().max(128),
+    credentialID: Joi.string().max(128).allow(""),
+    credentialUrl: Joi.string().max(128).allow(""),
 });
 
 
@@ -54,7 +54,7 @@ const userSchema = Joi.object({
     skills: Joi.array().items(skillSchema),
     experiences: Joi.array().items(experienceSchema),
     educations: Joi.array().items(educationSchema),
-    licences: Joi.array().items(licenceSchema),
+    licenses: Joi.array().items(licenceSchema),
     languages: Joi.array().items(Joi.string()),
 });
 
