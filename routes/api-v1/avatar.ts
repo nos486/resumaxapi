@@ -44,7 +44,7 @@ async function getUserAvatarById(req: Request, res: Response, next: NextFunction
         headers: {'Content-Type': 'image/jpeg'}
     };
 
-    console.log()
+
 
     if (fs.existsSync(path.join(__dirname, './../../files/avatars/',req.params.id.toString()))) {
         let avatarPath = path.join(__dirname, './../../files/avatars/',req.params.id.toString())
@@ -67,6 +67,9 @@ async function getUserAvatarById(req: Request, res: Response, next: NextFunction
 
 
 function setAvatar(req: Request, res: Response, next: NextFunction) {
+
+    console.log(__dirname)
+    console.log(path.join(__dirname, './../../files/avatars/'))
 
     uploadController(req, res, function (err) {
         if (err) {
