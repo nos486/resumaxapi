@@ -15,7 +15,7 @@ router.post('/', jwtAuthorize, avatarValidator.setAvatarValidator, setAvatar);
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './files/avatars/')
+        cb(null, path.join(__dirname, './../../files/avatars/'))
     },
     filename: function (req, file, cb) {
         cb(null, req.user._id.toString())
@@ -44,8 +44,10 @@ async function getUserAvatarById(req: Request, res: Response, next: NextFunction
         headers: {'Content-Type': 'image/jpeg'}
     };
 
-    if (fs.existsSync(`./files/avatars/${req.params.id}`)) {
-        let avatarPath = `./files/avatars/${req.params.id}`
+    console.log()
+
+    if (fs.existsSync(path.join(__dirname, './../../files/avatars/',req.params.id.toString()))) {
+        let avatarPath = path.join(__dirname, './../../files/avatars/',req.params.id.toString())
 
         res.sendFile(avatarPath, options, function (err) {
             if (err) {
@@ -65,6 +67,7 @@ async function getUserAvatarById(req: Request, res: Response, next: NextFunction
 
 
 function setAvatar(req: Request, res: Response, next: NextFunction) {
+
     uploadController(req, res, function (err) {
         if (err) {
             next(err)
