@@ -61,7 +61,7 @@ const userSchema = Joi.object({
     educations: Joi.array().items(educationSchema),
     licenses: Joi.array().items(licenceSchema),
     languages: Joi.array().items(Joi.string()),
-    settings: Joi.array().items(settingsSchema),
+    settings: settingsSchema,
 });
 
 function updateUserValidate(req: Request, res: Response, next: NextFunction) {
