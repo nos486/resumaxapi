@@ -7,28 +7,25 @@ import fs from "fs";
 import path from "path";
 import multer from "multer"
 import avatarBuilder from "avatar-builder"
+import cloudinary from "../../cloudinary"
+import {constants} from "os";
 
 const router = express.Router();
 
-router.get('/:id',basicValidator.paramIdIsValidObjectId, getUserAvatarById);
+// router.get('/:id', basicValidator.paramIdIsValidObjectId, getUserAvatarById);
 router.post('/', jwtAuthorize, avatarValidator.setAvatarValidator, setAvatar);
+router.delete('/', jwtAuthorize, deleteAvatar);
 
-let storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, './../../files/avatars/'))
-    },
-    filename: function (req, file, cb) {
-        cb(null, req.user._id.toString())
-    }
-});
 
 const uploadController = multer({
-    storage: storage,
-    fileFilter: function (req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG)$/)) {
-            return cb(new Error('Only jpg files are allowed!'));
+    storage: multer.diskStorage({}),
+    fileFilter: (req, file, cb) => {
+        let ext = path.extname(file.originalname);
+        if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+            cb(new Error("File type is not supported"));
+            return;
         }
-        cb(null, true)
+        cb(null, true);
     },
     limits: {
         fileSize: 1024 * 1024
@@ -37,48 +34,54 @@ const uploadController = multer({
 
 
 async function getUserAvatarById(req: Request, res: Response, next: NextFunction) {
-    if (! await userController.hasId(req.params.id)) next(new Error("Id not find"))
+    // if (!await userController.hasId(req.params.id)) next(new Error("Id not find"))
 
-    let options = {
-        root: path.join(""),
-        headers: {'Content-Type': 'image/jpeg'}
-    };
+    // userController.getUserById(req.params.id).then((user)=>{
+    //     if(user.avatarId != "") {
+    //         res.send(cloudinary.utils.private_download_url(user.avatarId,"jpg",{}))
+    //     }else {
+    //         next(new Error("Avatar not find"))
+    //     }
+    // }).catch(err=>next(err))
 
-
-
-    if (fs.existsSync(path.join(__dirname, './../../files/avatars/',req.params.id.toString()))) {
-        let avatarPath = path.join(__dirname, './../../files/avatars/',req.params.id.toString())
-
-        res.sendFile(avatarPath, options, function (err) {
-            if (err) {
-                next(err)
-            }
-        })
-    } else {
-        const avatar = avatarBuilder.squareBuilder(128)
-        avatar.create(req.params.id.toString()).then(buffer =>{
-            res.type("image/png")
-            res.send(buffer)
-        }).catch((err)=>{
-            next(err)
-        })
-    }
 }
 
 
 function setAvatar(req: Request, res: Response, next: NextFunction) {
-
-    console.log(__dirname)
-    console.log(path.join(__dirname, './../../files/avatars/'))
-
     uploadController(req, res, function (err) {
         if (err) {
             next(err)
         } else {
-            console.log(req.file)
-            res.json({"message":"Avatar upload successfully"})
+            if (req.file?.path != null) cloudinary.uploader.upload(req.file.path, {
+                folder: "resumax/avatar",
+                public_id: req.user.id.toString(),
+                allowed_formats : ["jpg","png"],
+
+                // type : "private",
+            }).then((result) => {
+                req.user.avatar = result.secure_url
+                req.user.avatarId = result.public_id
+                req.user.save().then(() => {
+                    res.json(req.user.toJSON())
+                }).catch(err => next(err))
+            }).catch(err => next(err))
         }
     });
 }
+
+function deleteAvatar(req: Request, res: Response, next: NextFunction) {
+    if (req.user.avatarId != "") {
+        cloudinary.uploader.destroy(req.user.avatarId).then((response) => {
+            req.user.avatar = ""
+            req.user.avatarId = ""
+            req.user.save().then(() => {
+                res.json(req.user.toJSON())
+            }).catch(err => next(err))
+        }).catch(err => next(err))
+    } else {
+        next(new Error("Avatar not find"))
+    }
+}
+
 
 export default router

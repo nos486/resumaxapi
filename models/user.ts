@@ -78,7 +78,8 @@ export interface IUser extends Document {
     educations: IEducation[]
     licenses: ILicense[]
     languages: string[]
-    avatarPath?: string
+    avatar?: string
+    avatarId : string
     settings: IUserSettings
 }
 
@@ -153,7 +154,8 @@ const schema = new Schema(
         educations: {type: [schemaEducation], default: []},
         licenses: {type: [schemaLicense], default: []},
         languages: {type: [{type: String}], default: []},
-        avatarPath: {type: String},
+        avatar: {type: String, default : ""},
+        avatarId: {type: String, default : ""},
         settings: {type: schemaUserSettings, required: true, default: defaultUserSettings}
     },
     {
@@ -164,10 +166,10 @@ const schema = new Schema(
             transform: ((doc, ret) => {
                 // remove these props when object is serialized
                 delete ret.id;
-                // delete ret.updatedAt
-                // delete ret.updatedAt
+                delete ret.updatedAt
+                delete ret.updatedAt
                 delete ret.password;
-                delete ret.avatarPath;
+                delete ret.avatarId;
             })
         }
     },
