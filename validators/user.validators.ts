@@ -38,6 +38,7 @@ const licenceSchema = Joi.object({
 const settingsSchema = Joi.object({
     color: Joi.string().min(2).max(64),
     template: Joi.string().min(2).max(64),
+    templateSettings : Joi.object()
 });
 
 

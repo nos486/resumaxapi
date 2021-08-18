@@ -45,6 +45,7 @@ export interface IUserSettings {
     _id?: string,
     color: string,
     template : string
+    templateSettings : object
 }
 
 export interface ISkills {
@@ -121,12 +122,14 @@ const schemaLicense = new Schema({
 
 const schemaUserSettings = new Schema({
     color: {type: String, required: true},
-    template: {type: String, template: true},
+    template: {type: String, required: true},
+    templateSettings : {type:Object,required:true}
 });
 
 const defaultUserSettings: IUserSettings = {
     color: "orange",
     template: "default",
+    templateSettings : {c1:["basic", "contact","skills","languages"],c2:["about","experiences","educations","licenses"]}
 }
 
 const schema = new Schema(

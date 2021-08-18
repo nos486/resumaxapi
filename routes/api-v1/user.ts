@@ -43,7 +43,6 @@ function updateUser(req: Request, res: Response, next: NextFunction) {
     Object.entries(req.body).forEach(([key, value]) => {
         req.user.set(key, value)
     })
-
     req.user.save().then(() => {
         res.json(req.user)
     }).catch(next)
