@@ -15,7 +15,7 @@ function dbConnect() {
         // create admin user
         if (!await userController.hasUsername("admin")) {
             let admin = await userController.createUser("admin", "nos486@gmail.com", "admin",)
-            admin.isEmailValid = true
+            admin.isEmailVerified = true
             await admin.save()
         }
 

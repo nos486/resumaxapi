@@ -38,10 +38,18 @@ function registerValidator(req: Request, res: Response, next: NextFunction) {
     validator.validateRequestBody(req, next, schema);
 }
 
+function verifyEmailValidator(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object({
+        code: Joi.string().required().min(4).max(20),
+    });
+    validator.validateRequestBody(req, next, schema);
+}
+
 
 export default {
     authenticateValidator,
     refreshTokenValidator,
     revokeTokenValidator,
-    registerValidator
+    registerValidator,
+    verifyEmailValidator
 }

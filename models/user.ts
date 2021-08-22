@@ -62,7 +62,7 @@ export interface IUser extends Document {
     gender: GENDER
     role: ROLE
     email: string
-    isEmailValid: boolean
+    isEmailVerified: boolean
     password: string
     headLine?: string
     icon?: string
@@ -140,7 +140,7 @@ const schema = new Schema(
         gender: {type: String, enum: Object.values(GENDER), default: GENDER.UNDISCLOSED},
         role: {type: String, enum: Object.values(ROLE), default: ROLE.USER},
         email: {type: String, unique: true, required: true},
-        isEmailValid: {type: Boolean, default: false},
+        isEmailVerified: {type: Boolean, default: false},
         password: {type: String, required: true},
         headLine: {type: String, default: ""},
         icon: {type: String, default: ""},
