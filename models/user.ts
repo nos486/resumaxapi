@@ -122,8 +122,8 @@ const schemaLicense = new Schema({
 
 const schemaUserSettings = new Schema({
     color: {type: String, required: true},
-    template: {type: String, required: true},
-    templateSettings : {type:Object,required:true}
+    template: {type: String, required: true,default: "default"},
+    templateSettings : {type:Object,required:true,default: {}}
 });
 
 const defaultUserSettings: IUserSettings = {
