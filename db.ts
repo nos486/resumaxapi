@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import userController from "./controllers/user"
+import users from "./routes/api-v1/users";
+import {IUser} from "./models/user";
 
 
 const connectionOptions = {
@@ -18,6 +20,14 @@ function dbConnect() {
             admin.isEmailVerified = true
             await admin.save()
         }
+
+        // userController.getUsers().then(async (users: IUser[]) => {
+        //     for (let user of users) {
+        //         console.log(user.username)
+        //         user.settings.modules = ["basic", "contact", "skills", "languages", "about", "experiences", "educations"]
+        //         await user.save()
+        //     }
+        // }).catch()
 
         console.error('database connected');
 

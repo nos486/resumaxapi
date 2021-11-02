@@ -38,6 +38,7 @@ const licenceSchema = Joi.object({
 const settingsSchema = Joi.object({
     color: Joi.string().min(2).max(64),
     template: Joi.string().min(2).max(64),
+    modules: Joi.array().items(Joi.string()),
     templateSettings : Joi.object()
 });
 
@@ -62,6 +63,7 @@ const userSchema = Joi.object({
     educations: Joi.array().items(educationSchema),
     licenses: Joi.array().items(licenceSchema),
     languages: Joi.array().items(Joi.string()),
+    highlights: Joi.array().items(Joi.string()),
     settings: settingsSchema,
 });
 

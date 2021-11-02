@@ -67,6 +67,14 @@ async function getUserByUsername(username: string): Promise<IUser> {
         })
 }
 
+async function getUsers(): Promise<IUser[]> {
+    return User.find()
+        .then((data: IUser[] | null) => {
+            if (data == null) throw new Error('no user found!');
+            return data
+        })
+}
+
 async function hasId(id: string): Promise<boolean> {
     return !!(await User.findById(id))
 }
@@ -80,6 +88,7 @@ async function hasEmail(email: string): Promise<boolean> {
 }
 
 
+
 export default {
     authenticateUser,
     createUser,
@@ -88,4 +97,5 @@ export default {
     hasEmail,
     getUserById,
     getUserByUsername,
+    getUsers,
 }

@@ -45,6 +45,7 @@ export interface IUserSettings {
     _id?: string,
     color: string,
     template : string
+    modules : string[]
     templateSettings : object
 }
 
@@ -79,6 +80,7 @@ export interface IUser extends Document {
     educations: IEducation[]
     licenses: ILicense[]
     languages: string[]
+    highlights: string[]
     avatar?: string
     avatarId : string
     settings: IUserSettings
@@ -123,12 +125,14 @@ const schemaLicense = new Schema({
 const schemaUserSettings = new Schema({
     color: {type: String, required: true},
     template: {type: String, required: true,default: "default"},
+    modules : {type: [{type: String}],required: true, default: ["basic", "contact","skills","languages","about","experiences","educations"]},
     templateSettings : {type:Object,required:true,default: {}}
 });
 
 const defaultUserSettings: IUserSettings = {
     color: "orange",
     template: "default",
+    modules : [],
     templateSettings : {c1:["basic", "contact","skills","languages"],c2:["about","experiences","educations","licenses"]}
 }
 
@@ -157,6 +161,7 @@ const schema = new Schema(
         educations: {type: [schemaEducation], default: []},
         licenses: {type: [schemaLicense], default: []},
         languages: {type: [{type: String}], default: []},
+        highlights: {type: [{type: String}], default: []},
         avatar: {type: String, default : ""},
         avatarId: {type: String, default : ""},
         settings: {type: schemaUserSettings, required: true, default: defaultUserSettings}
