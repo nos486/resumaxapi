@@ -133,7 +133,7 @@ const defaultUserSettings: IUserSettings = {
     color: "orange",
     template: "default",
     modules : [],
-    templateSettings : {c1:["basic", "contact","skills","languages"],c2:["about","experiences","educations","licenses"]}
+    templateSettings : {c1:["basic", "contact","skills","languages"],c2:["about","highlights","experiences","educations","licenses"]}
 }
 
 const schema = new Schema(

@@ -24,7 +24,13 @@ function dbConnect() {
         // userController.getUsers().then(async (users: IUser[]) => {
         //     for (let user of users) {
         //         console.log(user.username)
-        //         user.settings.modules = ["basic", "contact", "skills", "languages", "about", "experiences", "educations"]
+        //         // @ts-ignore
+        //         let temp = user.settings.templateSettings.c2
+        //         if(temp != undefined){
+        //             temp.push("highlights")
+        //         }
+        //         // @ts-ignore
+        //         user.settings.templateSettings.c2 = temp
         //         await user.save()
         //     }
         // }).catch()
