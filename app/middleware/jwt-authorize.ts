@@ -22,6 +22,8 @@ export default function jwtAuthorize(req: Request, res: Response, next: NextFunc
                 throw new Error('Invalid token')
             } else {
                 if (decoded != undefined) {
+
+                    // @ts-ignore
                     userController.getUserById(decoded.id).then((user) => {
                         if (user != null) {
                             req.user = user

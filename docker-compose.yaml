@@ -12,7 +12,7 @@ services:
     working_dir: /app
     networks:
       - network
-    command: bash -c "npm install && npm build && npm start"
+    command: bash -c "npm install && npm run build && npm start"
 
 networks:
   network:
