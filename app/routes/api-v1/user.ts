@@ -1,6 +1,7 @@
 import express, {NextFunction, Request, Response} from 'express';
 import jwtAuthorize from "../../middleware/jwt-authorize";
 import userValidators from "../../validators/user.validators"
+import userController from "../../controllers/user"
 import {IEducation, IExperience, ILicense, ISkills} from "../../models/user";
 
 const router = express.Router();
@@ -8,6 +9,7 @@ const router = express.Router();
 
 router.get('/', jwtAuthorize, getUser)
 router.post('/', jwtAuthorize, userValidators.updateUserValidate, updateUser)
+router.post('/password', jwtAuthorize, userValidators.updatePasswordValidate, updatePassword)
 
 router.get('/skill/:id', jwtAuthorize, getArrayItem("skills"))
 router.get('/skills', jwtAuthorize, getParam("skills"))
@@ -48,6 +50,12 @@ function updateUser(req: Request, res: Response, next: NextFunction) {
     }).catch(next)
 }
 
+function updatePassword(req: Request, res: Response, next: NextFunction) {
+    userController.changePassword(req.user.username, req.body.oldPassword, req.body.newPassword).then((user) => {
+        res.json(user)
+    }).catch(next)
+}
+
 function getParam(paramName: string) {
     return (req: Request, res: Response) => {
         res.json(req.user.get(paramName))
@@ -84,7 +92,7 @@ function updateArrayItem(arrayName: string) {
 
         if (index != -1) {
             let array = req.user.get(arrayName)
-            console.log(array,index)
+            console.log(array, index)
             array[index] = {_id: req.params.id, ...req.body}
             req.user.save().then(() => {
                 res.json(req.user.get(arrayName)[index])

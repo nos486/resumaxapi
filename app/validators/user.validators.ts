@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from "express";
-import Joi from "joi";
+import Joi, {string} from "joi";
 import validator from "../middleware/request-validator";
+
 
 const skillSchema = Joi.object({
     title: Joi.string().required().min(2).max(64),
@@ -39,7 +40,7 @@ const settingsSchema = Joi.object({
     color: Joi.string().min(2).max(64),
     template: Joi.string().min(2).max(64),
     modules: Joi.array().items(Joi.string()),
-    templateSettings : Joi.object()
+    templateSettings: Joi.object()
 });
 
 
@@ -71,6 +72,13 @@ function updateUserValidate(req: Request, res: Response, next: NextFunction) {
     validator.validateRequestBody(req, next, userSchema);
 }
 
+function updatePasswordValidate(req: Request, res: Response, next: NextFunction) {
+    validator.validateRequestBody(req, next, Joi.object({
+        oldPassword: Joi.string().required(),
+        newPassword: Joi.string().required(),
+    }));
+}
+
 function setSkillValidate(req: Request, res: Response, next: NextFunction) {
     validator.validateRequestBody(req, next, skillSchema);
 }
@@ -90,6 +98,7 @@ function setLicenseValidate(req: Request, res: Response, next: NextFunction) {
 
 export default {
     updateUserValidate,
+    updatePasswordValidate,
     setSkillValidate,
     setEducationValidate,
     setExperienceValidate,

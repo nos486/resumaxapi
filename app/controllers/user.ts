@@ -50,6 +50,22 @@ async function authenticateUser(username: string, password: string, ipAddress: s
     };
 }
 
+async function changePassword(username: string,oldPassword:string, password: string) {
+    username = username.toLowerCase()
+
+    const user = await User.findOne({username}) as IUser;
+
+    if (!user || !bcrypt.compareSync(oldPassword, user.password)) {
+        throw new Error('old password is incorrect');
+    }
+
+    // authentication successful
+    user.password = bcrypt.hashSync(password, 10)
+
+    await user.save()
+    return user;
+}
+
 async function getUserById(id: string): Promise<IUser> {
     if (!mongoose.Types.ObjectId.isValid(id)) throw new Error('User not found');
     return User.findById(id)
@@ -98,4 +114,5 @@ export default {
     getUserById,
     getUserByUsername,
     getUsers,
+    changePassword,
 }
