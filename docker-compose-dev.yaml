@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  resumaxapi:
+    image: node:17.8.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app
+    env_file:
+      - ./vars.env
+    working_dir: /app
+    networks:
+      - network
+    command: bash -c "npm install && npm run dev"
+
+networks:
+  network:
+    external: true
