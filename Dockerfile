@@ -4,14 +4,20 @@ FROM node:17.8.0
 # set working directory
 WORKDIR /app
 
-COPY ./app .
+# copy the package.json and package-lock.json
+COPY ./app/package*.json ./
 
 # install dependencies
 RUN npm install
+
+# copy source code
+COPY ./app .
+
+# build the app
+RUN npm run build
 
 # expose port 3000
 EXPOSE 3000
 
 # start the app
-CMD ["npm", "run", "build"]
 CMD ["npm", "start"]
