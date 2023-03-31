@@ -13,11 +13,8 @@ RUN npm install
 # copy source code
 COPY ./app .
 
-# build the app
-RUN npm run build
+# build the app and start
+CMD sh -c "npm run build && npm start"
 
 # expose port 3000
 EXPOSE 3000
-
-# start the app
-CMD ["npm", "start"]
