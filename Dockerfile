@@ -5,16 +5,13 @@ FROM node:17.8.0
 WORKDIR /app
 
 # copy the package.json and package-lock.json
-COPY ./app/package*.json ./
+COPY ./app .
 
 # install dependencies
 RUN npm install
+RUN run build
 
-# copy source code
-COPY ./app .
-
-# build the app and start
-CMD sh -c "npm run build && npm start"
 
 # expose port 3000
 EXPOSE 3000
+CMD ["npm", "start"]
