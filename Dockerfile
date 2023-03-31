@@ -9,8 +9,9 @@ COPY ./app .
 
 # install dependencies
 RUN npm install
-RUN run build
 
+# build the app and start
+RUN ["npm" ,"run" ,"build"]
 
 # expose port 3000
 EXPOSE 3000
