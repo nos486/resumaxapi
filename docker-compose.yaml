@@ -17,7 +17,7 @@ services:
 
   resumaxapi:
     image: node:17.8.0
-    restart: always
+#    restart: always
 #    ports:
 #      - "3000:3000"
     volumes:
@@ -27,7 +27,7 @@ services:
     working_dir: /app
     networks:
       - network
-    command: bash -c "cd app && npm install && npm run build && npm start"
+    command: bash -c "pwd && ls && npm install && npm run build && npm start"
 
 networks:
   network:
