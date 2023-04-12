@@ -31,4 +31,5 @@ services:
 
 networks:
   network:
-    external: true
+    name : resumax
+#    external: true
