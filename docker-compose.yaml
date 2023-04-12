@@ -6,8 +6,8 @@ services:
     restart: always
     volumes:
       - ./db:/data/db
-    ports:
-      - "27017:27017"
+#    ports:
+#      - "27017:27017"
     #    environment:
     #      MONGO_INITDB_DATABASE : "handover"
     #      MONGO_INITDB_ROOT_USERNAME : "username"
@@ -18,8 +18,8 @@ services:
   resumaxapi:
     image: node:17.8.0
     restart: always
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
     volumes:
       - ./app:/app
     env_file:
