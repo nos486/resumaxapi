@@ -22,8 +22,8 @@ services:
 #      - "3000:3000"
     volumes:
       - ./app:/app
-    env_file:
-      - ./vars.env
+#    env_file:
+#      - ./vars.env
     working_dir: /app
     networks:
       - network
