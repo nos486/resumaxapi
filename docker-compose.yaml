@@ -16,7 +16,7 @@ services:
       - network
 
   resumaxapi:
-    image: node:17.8.0
+    image: node:18.14.2
     restart: always
 #    ports:
 #      - "3000:3000"
