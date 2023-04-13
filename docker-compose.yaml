@@ -19,7 +19,7 @@ services:
     image: node:17.8.0
     restart: always
     ports:
-      - "3000:3000"
+      - "3002:3000"
     volumes:
       - ./app:/app
     env_file:
