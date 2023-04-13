@@ -6,8 +6,8 @@ services:
     restart: always
     volumes:
       - ./db:/data/db
-#    ports:
-#      - "27017:27017"
+    ports:
+      - "27017:27017"
     #    environment:
     #      MONGO_INITDB_DATABASE : "handover"
     #      MONGO_INITDB_ROOT_USERNAME : "username"
@@ -16,18 +16,18 @@ services:
       - network
 
   resumaxapi:
-    image: node:18.14.2
+    image: node:17.8.0
     restart: always
-#    ports:
-#      - "3000:3000"
+    ports:
+      - "3000:3000"
     volumes:
-      - /root/resumaxapi/app:/app
-#    env_file:
-#      - ./vars.env
+      - ./app:/app
+    env_file:
+      - ./vars.env
     working_dir: /app
     networks:
       - network
-    command: bash -c "npm install && npm run build && npm start"
+    command: bash -c "npm install --build-from-resource && npm run build && npm start"
 
 networks:
   network:
